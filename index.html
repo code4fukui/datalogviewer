@@ -1,0 +1,92 @@
+<!DOCTYPE html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width"><link rel="icon" href="data:">
+<title>data log viewer</title></head><body>
+<h1>data log viewer</h1>
+
+<div class=chart id=divchart></div>
+<div>drop CSV file with timestamp</div>
+
+<hr>
+<div class=credit>
+<a href=https://fukuno.jig.jp/4795>data log viewer for iOS App of Barometer</a> / <a href=https://github.com/code4fukui/datalogviewer/>src on GitHub</a><br>
+</diV>
+
+<script type="module">
+import { getTideData } from "https://code4fukui.github.io/tidelevel/getTideData.js";
+//import { showLineChart } from "https://code4fukui.github.io/eqnoto2024/showLineChart.js";
+import { showLineChart } from "./showLineChart.js";
+import { CSV } from "https://js.sabae.cc/CSV.js";
+import { setDropFilesListener } from "https://js.sabae.cc/setDropFilesListener.js";
+import { readAsArrayBufferAsync } from "https://code4sabae.github.io/js/readAsArrayBufferAsync.js";
+
+export const setDropFileListenerCSV = (comp, callback) => { // callback(data)
+  setDropFilesListener(comp, async (files) => {
+    const file = files[0].file;
+    const bin = await readAsArrayBufferAsync(file);
+    const txt = new TextDecoder().decode(bin);
+    const data = CSV.parse(txt);
+    callback(data);
+  });
+};
+
+const fn = "Barolog-2025-09-10.csv";
+
+const show = (data) => {
+  const series = [];
+
+  const names = Object.keys(data[0]);
+  const tname = "timestamp";
+  for (const name of names) {
+    if (name == tname) continue;
+    const dd = [];
+    let lastt = null;
+    const tgap = 10 * 1000;
+    for (const d of data) {
+      const t = new Date(d[tname]).getTime();
+      const v = parseFloat(d[name]);
+      if (lastt != null && t - lastt > tgap) {
+        dd.push([lastt + 1000, null]);
+      }
+      lastt = t;
+      dd.push([t, v]);
+    }
+    series.push({ name, data: dd });
+  }
+
+  console.log(series);
+  /*
+  [
+    { name, data: [[time, val]] }
+  ]
+  */
+  divchart.innerHTML = "";
+  const chart = showLineChart(divchart, series, 500);
+};
+
+const data = await CSV.fetchJSON(fn);
+console.log(data);
+show(data);
+
+setDropFileListenerCSV(document.body, show);
+</script>
+
+<style>
+body {
+  background-color: white;
+  font-family: sans-serif;
+  color: black;
+}
+#map > div {
+  color: black;
+  height: 40vh !important;
+}
+.chart {
+  background-color: #f8f8f8;
+  color: #222;
+  margin-bottom: .6em;
+}
+.credit a {
+  color: gray !important;
+}
+</style>
+
+</body></html>
