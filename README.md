@@ -1,5 +1,7 @@
 # datalogviewer
 
+> 日本語のREADMEはこちらです: [README.ja.md](README.ja.md)
+
 A web-based data log viewer for visualizing pressure and relative altitude data.
 
 ## Demo
