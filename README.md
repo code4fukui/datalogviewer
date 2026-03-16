@@ -4,9 +4,6 @@
 
 A web-based data log viewer for visualizing pressure and relative altitude data.
 
-## Demo
-You can view a live demo of the project at [https://code4fukui.github.io/datalogviewer/](https://code4fukui.github.io/datalogviewer/).
-
 ## Features
 - Displays pressure and relative altitude data in a line chart
 - Supports loading CSV files with timestamp, pressure, and relative altitude data
@@ -32,4 +29,4 @@ To run the project locally:
 The project includes a sample CSV file (`Barolog-2025-09-10.csv`) that contains simulated pressure and relative altitude data.
 
 ## License
-This project is licensed under the [MIT License](LICENSE).
+MIT License — see [LICENSE](LICENSE).
